@@ -8,5 +8,7 @@ num_layers = 6
 max_len = 50
 ## Hidden dimension for the Feedforward layer
 hidden_dim = 2048
+### Batch Size:
+batch_size = 128
 ## Number of Epochs
 epochs = 10

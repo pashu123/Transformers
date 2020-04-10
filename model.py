@@ -33,16 +33,12 @@ class Embedding(nn.Module):
         self.pe = self.create_pe(max_len, self.d_model)
     
     def create_pe(self, max_len, d_model):
-        '''
-        Creates the positional encoding of the sequence
-        '''
         pe = torch.zeros(max_len, d_model).to(device)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, d_model, 2).float() * \
-         (-math.log(10000.0) / d_model))
-        pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
-        pe = pe.unsqueeze(0).transpose(0, 1)
+        for pos in range(max_len):   # for each position of the word
+            for i in range(0, d_model, 2):   # for each dimension of the each position
+                pe[pos, i] = math.sin(pos / (10000 ** ((2 * i)/d_model)))
+                pe[pos, i + 1] = math.cos(pos / (10000 ** ((2 * (i + 1))/d_model)))
+        pe = pe.unsqueeze(0)   # include the batch size
         return pe
 
     def forward(self, encoded_words):
@@ -88,10 +84,14 @@ class Attention(nn.Module):
         # batch_size ,max_len,word_dimension -> batch_size,max_len,h,d_h -> batch_size,h,max_len,d_h
         batch_size, max_len,_ = query.shape
 
+        print(query.shape)
+        print(key.shape)
+        print(value.shape)
+
         ## let's break these into chunks for heads
-        query = query.view(batch_size,max_len,self.heads,self.d_h).permute(0,2,1,3)
-        key = key.view(batch_size,max_len,self.heads,self.d_h).permute(0,2,1,3)
-        value = value.view(batch_size,max_len,self.heads,self.d_h).permute(0,2,1,3)
+        query = query.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
+        key = key.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
+        value = value.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
 
         ## let's calculate attention yo!
         ## We will get batch_size,h ,max_len,max_len
