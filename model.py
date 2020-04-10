@@ -84,10 +84,6 @@ class Attention(nn.Module):
         # batch_size ,max_len,word_dimension -> batch_size,max_len,h,d_h -> batch_size,h,max_len,d_h
         batch_size, max_len,_ = query.shape
 
-        print(query.shape)
-        print(key.shape)
-        print(value.shape)
-
         ## let's break these into chunks for heads
         query = query.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
         key = key.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
