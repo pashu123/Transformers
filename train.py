@@ -35,14 +35,13 @@ criterion = LossWithLS(len(word_map), 0.1)
 
 
 
-
+transformer = nn.DataParallel(transformer)
 
 
 
 
 for epoch in range(config.epochs):
 
-    sum_loss = 0
 
     for question, reply in tqdm(train_loader):
 
@@ -62,9 +61,7 @@ for epoch in range(config.epochs):
         loss.backward()
         trans_optim.step()
 
-        sum_loss += loss.item() * batch_size
-
-        print(sum_loss)
+        print(loss)
 
     state = {'epoch': config.epochs, 'transformer': transformer, 'transformer_optimizer': trans_optim}
     torch.save(state, 'checkpoint_' + str(epoch) + '.pth.tar')
