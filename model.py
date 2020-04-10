@@ -56,6 +56,7 @@ class Attention(nn.Module):
         ### Check whether heads divide d_model evenly
         assert d_model % heads == 0
         self.d_h = d_model // heads
+        self.d_model = d_model
         self.heads = heads
         self.dropout = nn.Dropout(0.1)
         self.query = nn.Linear(d_model,d_model)
@@ -63,7 +64,49 @@ class Attention(nn.Module):
         self.value = nn.Linear(d_model,d_model)
         self.concat = nn.Linear(d_model,d_model)
 
-        
+    def forward(self,query,key,value,mask):
+        '''
+        query,key and value of shape batch_size * max_len * dimensionality
+        mask of shape: (batch_size,1,1, max_words)
+        '''
+        ## Weights of same dimension so make sure dimensionality 
+        ## doesn't change
+        query = self.query(query)
+        key = self.key(key)
+        value = self.value(value)
+
+        # permute function used to alter dimension
+        # batch_size ,max_len,word_dimension -> batch_size,max_len,h,d_h -> batch_size,h,max_len,d_h
+        batch_size, max_len,_ = query.shape
+
+        ## let's break these into chunks for heads
+        query = query.view(batch_size,max_len,self.heads,self.d_h).permute(0,2,1,3)
+        key = key.view(batch_size,max_len,self.heads,self.d_h).permute(0,2,1,3)
+        value = value.view(batch_size,max_len,self.heads,self.d_h).permute(0,2,1,3)
+
+        ## let's calculate attention yo!
+        ## We will get batch_size,h ,max_len,max_len
+        ## Getting scores and normalizing
+        scores = torch.matmul(query,key.permute(0,1,3,2)) / math.sqrt(self.d_h)
+
+        ## For the decoder where the mask is 0
+        scores = scores.masked_fill(mask == 0,-1e9)
+        ## Take the softmax to obtain the weights
+        weights = F.softmax(scores,dim = -1)
+        weights = self.dropout(weights)
+
+        ## To obtain the context multiply with value
+        context = torch.matmul(weights,value)
+        ## remember contiguous makes the copy of the array
+        context = context.permute(0,2,1,3).contiguous().view(batch_size,max_len,self.d_model)
+
+        ## Pass it through concat layer which is
+        ## again of same dimensionality as the embedding dimension
+        interacted = self.concat(context)
+        return interacted
+
+
+
 
     
         
