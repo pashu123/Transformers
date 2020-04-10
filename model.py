@@ -4,7 +4,7 @@ import math
 import torch.nn.functional as F
 import config
 
-############# We will break code into 6 Classes #############
+############# We will break the model into 6 Subparts #############
 ## 1. Embedding Class 
 ## 2. Attention Class
 ## 3. Feed Forward Class
