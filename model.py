@@ -2,19 +2,28 @@ import torch
 import torch.nn as nn
 import math
 import torch.nn.functional as F
+import config
+
+############# We will break code into 6 Classes #############
+## 1. Embedding Class 
+## 2. Attention Class
+## 3. Feed Forward Class
+## 4. Encoder Class
+## 5. Decoder Class
+## 6. Transformer Class
+
 
 ## Select the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-########################## Embedding layer ###################
-## 1.Embedding for words
-## 2. Positional Encoding
+##################### Embedding layer ###################
+
 
 class Embedding(nn.Module):
     '''
     Embedding of words and positional Encoding 
     '''
-    def __init__(self, vocab_size, d_model, max_len):
+    def __init__(self, vocab_size, d_model, max_len = config.max_len):
 
         super(Embedding, self).__init__()
         self.d_model = d_model
@@ -44,7 +53,7 @@ class Embedding(nn.Module):
         return embedding
 
 
-###########################################################################
+
 
 
 ######################Attention Layer########################
@@ -106,10 +115,127 @@ class Attention(nn.Module):
         return interacted
 
 
+####################### Feed Forward Layer ################
+
+class FeedForward(nn.Module):
+    '''
+    Takes the input as dimensionality of word embedding
+    and hidden dimension size
+    '''
+    def __init__(self, d_model, h_dim = config.hidden_dim):
+
+        super(FeedForward,self).__init__()
+
+        self.fc1 = nn.Linear(d_model,h_dim)
+        self.fc2 = nn.Linear(h_dim,d_model)
+        self.dropout = nn.Dropout(0.1)
+
+    def forward(self,x):
+
+        out = F.relu(self.fc1(x))
+        out = self.fc2(self.dropout(out))
+        return out
+
+
+
+####################### Encoder Layer ##########################
+
+class Encoder(nn.Module):
+
+    def __init__(self,d_model,heads):
+
+        super(Encoder,self).__init__()
+
+        self.layernorm = nn.LayerNorm(d_model)
+        self.s_attention = Attention(heads,d_model)
+        self.feed_forward = FeedForward(d_model)
+        self.dropout = nn.Dropout(0.1)
+
+    def forward(self, embedding,mask):
+        
+        ## Self attention of encoder
+        interacted = self.s_attention(embedding,embedding,embedding,mask)
+        interacted = self.dropout(interacted)
+
+        ## Applying layernormalization and residual learning
+        interacted = self.layernorm(interacted + embedding)
+        feed_forward_out = self.feed_forward(interacted)
+        feed_forward_out = self.dropout(feed_forward_out)
+        encoded = self.layernorm(feed_forward_out + interacted)
+        return encoded
+
+
+
+################################### Decoder Layer #######################
+class Decoder(nn.Module):
+
+    def __init__(self,d_model,heads):
+        super(Decoder,self).__init__()
+        self.layernorm = nn.LayerNorm(d_model)
+        self.s_attention = Attention(heads,d_model)
+        self.m_attention = Attention(heads,d_model)
+        self.feed_forward = FeedForward(d_model)
+        self.dropout = nn.Dropout(0.1)
+
+    
+    def forward(self,embedding,encoded,src_mask,target_mask):
+        
+        ### Self attention of decoder
+        context = self.s_attention(embedding,embedding,embedding,target_mask)
+        context = self.dropout(context)
+        context = self.layernorm(context + embedding)
+
+        ## Encoder Decoder Attention
+        interacted = self.m_attention(context, encoded, encoded, src_mask)
+        interacted = self.dropout(interacted)
+
+
+        feed_out = self.feed_forward(interacted)
+        feed_out = self.dropout(feed_out)
+
+        decoded = self.layernorm(feed_out + interacted)
+
+        return decoded
+
+
+
+
+######################### Finaaaly Transformer Layer ! #############
+    
+class Transformer(nn.Module):
+
+    def __init__(self, d_model, heads, num_layer, word_map):
+
+        super(Transformer, self).__init__()
+
+        self.d_model = d_model
+        self.vocab_size = len(word_map)
+        self.embed = Embedding(self.vocab_size,d_model)
+        ### There are num_layers of encoders and decoders
+        self.encoder = nn.ModuleList([Encoder(d_model, heads) for _ in range(num_layer)])
+        self.decoder = nn.ModuleList([Decoder(d_model, heads) for _ in range(num_layer)])
+        self.logit = nn.Linear(d_model, self.vocab_size)
+
+    def encode(self, src_words, src_mask):
+        ### Obtain embedding and pass it through encoder layer
+        src_embeddings = self.embed(src_words)
+        for layer in self.encoder:
+            src_embeddings = layer(src_embeddings, src_mask)
+        return src_embeddings
+    
+    def decode(self, target_words, target_mask, src_embeddings, src_mask):
+        ### Obtain embedding and pass it through decoder layer
+        tgt_embeddings = self.embed(target_words)
+        for layer in self.decoder:
+            tgt_embeddings = layer(tgt_embeddings, src_embeddings, src_mask, target_mask)
+        return tgt_embeddings
+        
+    def forward(self, src_words, src_mask, target_words, target_mask):
+        ## Encoder Decoder and then softmax
+        encoded = self.encode(src_words, src_mask)
+        decoded = self.decode(target_words, target_mask, encoded, src_mask)
+        out = F.log_softmax(self.logit(decoded), dim = 2)
+        return out        
 
 
     
-        
-
-
-

@@ -6,5 +6,7 @@ heads = 8
 num_layers = 6
 ## Maximum Length of sentences
 max_len = 50
+## Hidden dimension for the Feedforward layer
+hidden_dim = 2048
 ## Number of Epochs
 epochs = 10
