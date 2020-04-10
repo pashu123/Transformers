@@ -42,6 +42,7 @@ transformer = nn.DataParallel(transformer)
 
 for epoch in range(config.epochs):
 
+    epoch_loss = 0
 
     for question, reply in tqdm(train_loader):
 
@@ -61,7 +62,10 @@ for epoch in range(config.epochs):
         loss.backward()
         trans_optim.step()
 
-        print(loss)
+        epoch_loss += loss.item()
+
+    
+    print(epoch_loss)
 
     state = {'epoch': config.epochs, 'transformer': transformer, 'transformer_optimizer': trans_optim}
     torch.save(state, 'checkpoint_' + str(epoch) + '.pth.tar')
