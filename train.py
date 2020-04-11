@@ -35,16 +35,16 @@ criterion = LossWithLS(len(word_map), 0.1)
 
 
 
-transformer = nn.DataParallel(transformer)
 
 
 
 
 for epoch in range(config.epochs):
 
-    epoch_loss = 0
-
-    for question, reply in tqdm(train_loader):
+    tot_loss = 0
+    count = 0
+    enum = 0
+    for (question, reply) in tqdm(train_loader):
 
         batch_size = question.shape[0]
 
@@ -57,15 +57,23 @@ for epoch in range(config.epochs):
         question_mask, reply_input_mask, reply_target_mask = create_masks(question, reply_input, reply_target)
 
         out = transformer(question, question_mask, reply_input, reply_input_mask)
+
         loss = criterion(out, reply_target, reply_target_mask)
+
         trans_optim.optimizer.zero_grad()
+
         loss.backward()
+
         trans_optim.step()
 
-        epoch_loss += loss.item()
+       	tot_loss += loss.item() * batch_size
+        count += batch_size
 
-    
-    print(epoch_loss)
+        enum += 1
+
+        if enum % 10 == 0:
+            print("Loss: {:.3f}".format(tot_loss/count))
+
 
     state = {'epoch': config.epochs, 'transformer': transformer, 'transformer_optimizer': trans_optim}
     torch.save(state, 'checkpoint_' + str(epoch) + '.pth.tar')

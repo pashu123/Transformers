@@ -19,13 +19,13 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 ##################### Embedding layer ###################
 
 
-class Embedding(nn.Module):
+class Embeddings(nn.Module):
     '''
     Embedding of words and positional Encoding 
     '''
     def __init__(self, vocab_size, d_model, max_len = config.max_len):
 
-        super(Embedding, self).__init__()
+        super(Embeddings, self).__init__()
         self.d_model = d_model
         self.dropout = nn.Dropout(0.1)
         ## embedding layer of size vocab_size * d_model
@@ -82,17 +82,16 @@ class Attention(nn.Module):
 
         # permute function used to alter dimension
         # batch_size ,max_len,word_dimension -> batch_size,max_len,h,d_h -> batch_size,h,max_len,d_h
-        batch_size, max_len,_ = query.shape
 
         ## let's break these into chunks for heads
-        query = query.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
-        key = key.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
-        value = value.view(batch_size,-1,self.heads,self.d_h).permute(0,2,1,3)
+        query = query.view(query.shape[0],-1,self.heads,self.d_h).permute(0,2,1,3)
+        key = key.view(key.shape[0],-1,self.heads,self.d_h).permute(0,2,1,3)
+        value = value.view(value.shape[0],-1,self.heads,self.d_h).permute(0,2,1,3)
 
         ## let's calculate attention yo!
         ## We will get batch_size,h ,max_len,max_len
         ## Getting scores and normalizing
-        scores = torch.matmul(query,key.permute(0,1,3,2)) / math.sqrt(self.d_h)
+        scores = torch.matmul(query,key.permute(0,1,3,2)) / math.sqrt(query.size(-1))
 
         ## For the decoder where the mask is 0
         scores = scores.masked_fill(mask == 0,-1e9)
@@ -103,7 +102,7 @@ class Attention(nn.Module):
         ## To obtain the context multiply with value
         context = torch.matmul(weights,value)
         ## remember contiguous makes the copy of the array
-        context = context.permute(0,2,1,3).contiguous().view(batch_size,max_len,self.d_model)
+        context = context.permute(0,2,1,3).contiguous().view(context.shape[0], -1 ,self.d_model)
 
         ## Pass it through concat layer which is
         ## again of same dimensionality as the embedding dimension
@@ -147,7 +146,7 @@ class Encoder(nn.Module):
         self.feed_forward = FeedForward(d_model)
         self.dropout = nn.Dropout(0.1)
 
-    def forward(self, embedding,mask):
+    def forward(self, embedding, mask):
         
         ## Self attention of encoder
         interacted = self.s_attention(embedding,embedding,embedding,mask)
@@ -206,7 +205,7 @@ class Transformer(nn.Module):
 
         self.d_model = d_model
         self.vocab_size = len(word_map)
-        self.embed = Embedding(self.vocab_size,d_model)
+        self.embed = Embeddings(self.vocab_size,d_model)
         ### There are num_layers of encoders and decoders
         self.encoder = nn.ModuleList([Encoder(d_model, heads) for _ in range(num_layer)])
         self.decoder = nn.ModuleList([Decoder(d_model, heads) for _ in range(num_layer)])
