@@ -1,8 +1,20 @@
 import torch
 from torch.utils.data import Dataset
-import json
 import config
+import pickle
 
+
+with open('preprocess_input/question.pkl','rb') as f:
+    question = pickle.load(f)
+
+with open('preprocess_input/answers.pkl','rb') as f:
+    answers = pickle.load(f)
+
+with open('preprocess_input/vocab.pkl','rb') as f:
+    vocab_dict = pickle.load(f)
+
+vocab_dict[32350] = '<START>'
+vocab_dict[32351] = '<END>'
 
 
 
@@ -10,14 +22,14 @@ class Dataset(Dataset):
 
     def __init__(self):
 
-        self.pairs = json.load(open('pairs_encoded.json'))
-        self.dataset_size = len(self.pairs)
+        self.question = question
+        self.answers = answers 
+        self.dataset_size = len(self.question)
 
     def __getitem__(self, i):
         
-        question = torch.LongTensor(self.pairs[i][0])
-        reply = torch.LongTensor(self.pairs[i][1])
-            
+        question = torch.LongTensor(self.question[i])
+        reply = torch.LongTensor(self.answers[i])
         return question, reply
 
     def __len__(self):

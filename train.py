@@ -1,26 +1,27 @@
 import json
 import torch
-from dataset import train_loader
+import torch.nn.functional as F
+from dataset import train_loader,vocab_dict
 from model import Transformer
 from extra_optimization import *
 import config
 from tqdm import tqdm
+from model import create_padding_mask, create_look_ahead_mask
 
 
-
+vocab_size = len(vocab_dict)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-with open('WORDMAP_corpus.json', 'r') as j:
-    word_map = json.load(j)
 
 
 transformer = Transformer(d_model = config.d_model,
                             heads = config.heads,
-                            num_layer = config.num_layers,
-                            word_map = word_map)
+                            num_layers = config.num_layers,
+                            vocab_size = vocab_size)
 
 transformer = transformer.to(device)
+
 
 adam_custom = torch.optim.Adam(transformer.parameters(),
                                  lr = 0,
@@ -31,7 +32,6 @@ trans_optim = AdamWarmup(model_size = config.d_model,
                         warmup_steps = 4000, 
                         optimizer = adam_custom)
 
-criterion = LossWithLS(len(word_map), 0.1)
 
 
 
@@ -48,17 +48,26 @@ for epoch in range(config.epochs):
 
         batch_size = question.shape[0]
 
-        question = question.to(device)
-        reply = reply.to(device)
+        src = question.to(device)
+        target = reply.to(device)
 
-        reply_input = reply[:, :-1]
-        reply_target = reply[:, 1:]
+        target_input = target[:, :-1]
+        
+        ## remember teacher forcing
+        ys = target[:, 1:].contiguous().view(-1)
 
-        question_mask, reply_input_mask, reply_target_mask = create_masks(question, reply_input, reply_target)
+        src_mask = create_padding_mask(src)
+        trg_mask = create_look_ahead_mask(target_input)
 
-        out = transformer(question, question_mask, reply_input, reply_input_mask)
+        preds = transformer(src, target_input, src_mask, trg_mask)
 
-        loss = criterion(out, reply_target, reply_target_mask)
+        print(preds.shape)        
+        preds = preds.view(-1, preds.size(-1))
+
+        loss = F.cross_entropy(preds, ys, ignore_index = 0)
+    
+        print(loss)
+        print(loss.shape)
 
         trans_optim.optimizer.zero_grad()
 

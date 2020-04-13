@@ -4,7 +4,7 @@ import math
 import torch.nn.functional as F
 import config
 import copy
-
+import math
 ############# We will break the model into 6 Subparts #############
 ## 1. Embedding Class 
 ## 2. Attention Class
@@ -44,14 +44,14 @@ def scaled_dot_product_attention(query, key, value, mask):
 
 class MultiHeadAttention(nn.Module):
 
-    def __init__(self, d_model, num_heads):
+    def __init__(self, heads, d_model):
         super().__init__()
-        self.h = num_heads
+        self.heads = heads
         self.d_model = d_model
 
-        assert d_model % self.num_heads == 0
+        assert d_model % self.heads == 0
 
-        self.d_h = d_model // self.num_heads
+        self.d_h = self.d_model // self.heads
 
         self.q_dense = nn.Linear(d_model,d_model)
         self.k_dense = nn.Linear(d_model,d_model)
@@ -65,9 +65,9 @@ class MultiHeadAttention(nn.Module):
         # batch_size
         bs = q.size(0)
 
-        k = self.k_dense(k).view(bs, -1, self.h, self.d_h)
-        q = self.q_dense(q).view(bs, -1, self.h, self.d_h)
-        v = self.v_dense(v).view(bs, -1, self.h, self.d_h)
+        k = self.k_dense(k).view(bs, -1, self.heads, self.d_h)
+        q = self.q_dense(q).view(bs, -1, self.heads, self.d_h)
+        v = self.v_dense(v).view(bs, -1, self.heads, self.d_h)
 
         k = k.transpose(1,2)
         q = q.transpose(1,2)
@@ -105,7 +105,7 @@ def create_look_ahead_mask(x):
 
 class PositionalEncoding(nn.Module):
 
-    def __init__(self, d_model, dropout=0.1, max_len=50):
+    def __init__(self, d_model, dropout=0.1, max_len=40):
         super(PositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
         self.d_model = d_model
@@ -119,8 +119,8 @@ class PositionalEncoding(nn.Module):
         self.pe = pe
 
     def forward(self, x):
-        x *= torch.sqrt(self.d_model)
-        x +=  self.pe
+        x *= math.sqrt(self.d_model)
+        x +=  self.pe[:,:x.size(1)]
         return self.dropout(x)
 
 
@@ -149,8 +149,8 @@ class Embedder(nn.Module):
 class EncoderLayer(nn.Module):
     def __init__(self, d_model, heads, dropout = 0.1):
         super().__init__()
-        self.layernorm1 = nn.LayerNorm(d_model)
-        self.layernorm2 = nn.LayerNorm(d_model)
+        self.norm_1 = nn.LayerNorm(d_model)
+        self.norm_2 = nn.LayerNorm(d_model)
         self.attn = MultiHeadAttention(heads, d_model)
         self.ff = FeedForward(d_model)
         self.dropout_1 = nn.Dropout(dropout)
@@ -170,9 +170,9 @@ class EncoderLayer(nn.Module):
 class DecoderLayer(nn.Module):
     def __init__(self, d_model, heads, dropout = 0.1):
         super().__init__()
-        self.norm1 = nn.LayerNorm(d_model)
-        self.norm2 = nn.LayerNorm(d_model)
-        self.norm3 = nn.LayerNorm(d_model)
+        self.norm_1 = nn.LayerNorm(d_model)
+        self.norm_2 = nn.LayerNorm(d_model)
+        self.norm_3 = nn.LayerNorm(d_model)
 
         self.dropout_1 = nn.Dropout(dropout)
         self.dropout_2 = nn.Dropout(dropout)
@@ -206,7 +206,7 @@ class Encoder(nn.Module):
     def forward(self, src, mask):
         x = self.embed(src)
         x = self.pe(x)
-        for i in range(N):
+        for i in range(self.N):
             x = self.layers[i](x, mask)
         return self.norm(x)
     
@@ -243,17 +243,3 @@ class Transformer(nn.Module):
         return output
 
 
-
-
-query = np.array([[[3,4],[3,4],[4,3]]], dtype = float)
-key = np.array([[[3,4],[3,4],[4,3]]], dtype = float)
-value = np.array([[[3,4],[3,4],[4,3]]], dtype = float)
-query = torch.from_numpy(query)
-key = torch.from_numpy(key)
-value = torch.from_numpy(value)
-print(query.shape)
-mask = None
-
-scaled_dot_product_attention(query,key,value,mask)
-
-    
