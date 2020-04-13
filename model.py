@@ -233,4 +233,91 @@ class Transformer(nn.Module):
         return out        
 
 
+
+def scaled_dot_product_attention(query, key, value, mask):
+    '''query, key, value : batch_size * heads * max_len * d_h
+        return output : batch_size * heads * max_len * d_h
+    '''
+    
+    matmul = torch.matmul(query,key.transpose(-2,-1))
+
+    scale = torch.tensor(query.shape[-1],dtype=float)
+
+    logits = matmul / torch.sqrt(scale)
+
+    if mask is not None:
+        logits += (mask * -1e9)
+    
+    attention_weights = F.softmax(logits,dim = -1)
+
+    output = torch.matmul(attention_weights,value)
+
+    return output
+
+
+class MultiHeadAttention(nn.Module):
+
+    def __init__(self, d_model, num_heads):
+        super().__init__()
+        self.h = num_heads
+        self.d_model = d_model
+
+        assert d_model % self.num_heads == 0
+
+        self.d_h = d_model // self.num_heads
+
+        self.q_dense = nn.Linear(d_model,d_model)
+        self.k_dense = nn.Linear(d_model,d_model)
+        self.v_dense = nn.Linear(d_model,d_model)
+
+        self.out = nn.Linear(d_model,d_model)
+
+    
+    def forward(self, q, k, v, mask = None):
+        
+        # batch_size
+        bs = q.size(0)
+
+        k = self.k_dense(k).view(bs, -1, self.h, self.d_h)
+        q = self.q_dense(q).view(bs, -1, self.h, self.d_h)
+        v = self.v_dense(v).view(bs, -1, self.h, self.d_h)
+
+        k = k.transpose(1,2)
+        q = q.transpose(1,2)
+        v = v.transpose(1,2)
+
+        scores = scaled_dot_product_attention(q,k,v,mask)
+        
+        # concat each heads
+        concat = scores.transpose(1,2).contiguous()\
+            .view(bs,-1,self.d_model)
+        
+        out = self.out(concat)
+
+        return out
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+query = np.array([[[3,4],[3,4],[4,3]]], dtype = float)
+key = np.array([[[3,4],[3,4],[4,3]]], dtype = float)
+value = np.array([[[3,4],[3,4],[4,3]]], dtype = float)
+query = torch.from_numpy(query)
+key = torch.from_numpy(key)
+value = torch.from_numpy(value)
+print(query.shape)
+mask = None
+
+scaled_dot_product_attention(query,key,value,mask)
+
     
