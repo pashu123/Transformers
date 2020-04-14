@@ -1,4 +1,3 @@
-import json
 import torch
 from torch.utils.data import Dataset
 import torch.nn.functional as F
@@ -44,12 +43,12 @@ def evaluate(sentence,model,max_len = 40):
 
     for i in range(max_len-1):
 
-        size = words.shape[1]
+        size = start_word.shape[1]
         target_mask = torch.triu(torch.ones(size, size)).transpose(0, 1).type(dtype=torch.uint8)
-        target_mask = mask.to(device)
-        target_mask = (mask == 0) * 1
+        target_mask = target_mask.to(device)
+        target_mask = (target_mask == 0) * 1
 
-        decoded = model.decode(words, encoded, sentence_mask, target_mask)
+        decoded = model.decoder(start_word, encoded, sentence_mask, target_mask)
         
         out = model.out(decoded)
         out = F.softmax(out, dim = -1)
@@ -60,15 +59,15 @@ def evaluate(sentence,model,max_len = 40):
         if next_word == rev_vocab['<END>']:
             break
 
-        words = torch.cat([start_word, torch.LongTensor([[next_word]]).to(device)],dim = 1)
+        start_word = torch.cat([start_word, torch.LongTensor([[next_word]]).to(device)],dim = 1)
 
     
-    if words.dim() == 2:
-        words = words.squeeze(0)
-        words = words.tolist()
+    if start_word.dim() == 2:
+        start_word = start_word.squeeze(0)
+        start_word = start_word.tolist()
 
-    sen_idx = [w for w in words if w not in {vocab_dict['<START>']}]
-    sentence = ' '.join([rev_vocab[sen_idx[k]] for k in range(len(sen_idx))])
+    sen_idx = [w for w in start_word if w not in {rev_vocab['<START>']}]
+    sentence = ' '.join([vocab_dict[sen_idx[k]] for k in range(len(sen_idx))])
     
     return sentence
 
@@ -85,7 +84,5 @@ while(1):
     reply = evaluate(question,transformer)
     print(reply)
     
-
-
 
 

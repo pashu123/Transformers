@@ -1,4 +1,3 @@
-import json
 import torch
 import torch.nn.functional as F
 from dataset import train_loader,vocab_dict
