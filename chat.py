@@ -60,7 +60,7 @@ def evaluate(sentence,model,max_len = 40):
         if next_word == rev_vocab['<END>']:
             break
 
-        words = torch.cat([start_word, torch.LongTensor([next_word])]).to(device)],dim = 1)
+        words = torch.cat([start_word, torch.LongTensor([[next_word]]).to(device)],dim = 1)
 
     
     if words.dim() == 2:

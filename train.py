@@ -60,14 +60,10 @@ for epoch in range(config.epochs):
 
         preds = transformer(src, target_input, src_mask, trg_mask)
 
-        print(preds.shape)        
         preds = preds.view(-1, preds.size(-1))
 
         loss = F.cross_entropy(preds, ys, ignore_index = 0)
     
-        print(loss)
-        print(loss.shape)
-
         trans_optim.optimizer.zero_grad()
 
         loss.backward()
