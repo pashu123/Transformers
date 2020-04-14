@@ -82,7 +82,7 @@ while(1):
     question = input("Question: ")
     if question == 'quit':
         break
-    reply = evaluate(transformer, question)
+    reply = evaluate(question,transformer)
     print(reply)
     
 
