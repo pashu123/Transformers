@@ -33,7 +33,7 @@ def scaled_dot_product_attention(query, key, value, mask):
     logits = matmul / torch.sqrt(scale)
 
     if mask is not None:
-        logits += (mask * -1e9)
+        logits += (mask.float() * -1e9)
     
     attention_weights = F.softmax(logits,dim = -1)
 
