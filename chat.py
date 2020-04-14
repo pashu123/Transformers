@@ -3,10 +3,11 @@ import torch
 from torch.utils.data import Dataset
 import torch.nn.functional as F
 import torch.utils.data
-from models import *
-from utils import *
+from model import Transformer
 import re
 from dataset import vocab_dict
+
+
 
 rev_vocab = {v:k for k,v in vocab_dict.items()}
 
@@ -59,8 +60,16 @@ def evaluate(sentence,model,max_len = 40):
             break
 
         words = torch.cat([start_word, torch.LongTensor([next_word])]).to(device)],dim = 1)
-        
 
+    
+    if words.dim() == 2:
+        words = words.squeeze(0)
+        words = words.tolist()
+
+    sen_idx = [w for w in words if w not in {vocab_dict['<START>']}]
+    sentence = ' '.join([rev_vocab[sen_idx[k]] for k in range(len(sen_idx))])
+    
+    return sentence
 
 
     

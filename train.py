@@ -52,7 +52,6 @@ for epoch in range(config.epochs):
         target = reply.to(device)
 
         target_input = target[:, :-1]
-        
         ## remember teacher forcing
         ys = target[:, 1:].contiguous().view(-1)
 
