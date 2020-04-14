@@ -32,6 +32,7 @@ def evaluate(sentence,model,max_len = 40):
     sentence = [rev_vocab.get(word,0) for word in sentence]
     sentence = [rev_vocab['<START>']] + sentence + [rev_vocab['<END>']]
     sentence = torch.LongTensor(sentence).to(device)
+    sentence = sentence.unsqueeze(0)
 
     sentence_mask = (sentence == 0) * 1
     sentence_mask.unsqueeze(1).unsqueeze(1)
@@ -72,8 +73,18 @@ def evaluate(sentence,model,max_len = 40):
     return sentence
 
 
-    
+checkpoint = torch.load('checkpoint_0.pth.tar')
+transformer = checkpoint['transformer']
 
+
+
+while(1):
+    question = input("Question: ")
+    if question == 'quit':
+        break
+    reply = evaluate(transformer, question)
+    print(reply)
+    
 
 
 
