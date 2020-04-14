@@ -2,7 +2,6 @@ import torch
 import torch.nn.functional as F
 from dataset import train_loader,vocab_dict
 from model import Transformer
-from extra_optimization import *
 import config
 from tqdm import tqdm
 from model import create_padding_mask, create_look_ahead_mask
@@ -21,20 +20,17 @@ transformer = Transformer(d_model = config.d_model,
 
 transformer = transformer.to(device)
 
-
-adam_custom = torch.optim.Adam(transformer.parameters(),
-                                 lr = 0,
-                                  betas = (0.9,0.98),
-                                  eps = 1e-9)
-
-trans_optim = AdamWarmup(model_size = config.d_model,
-                        warmup_steps = 4000, 
-                        optimizer = adam_custom)
+for p in transformer.parameters():
+    if p.dim() > 1:
+        nn.init.xavier_uniform_(p)
 
 
+# checkpoint = torch.load('checkpoint.pth.tar')
+# transformer = checkpoint['transformer']
 
-
-
+lr = 5.0 # learning rate
+optimizer = torch.optim.SGD(transformer.parameters(), lr=lr)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.95)
 
 
 
@@ -43,7 +39,7 @@ for epoch in range(config.epochs):
     tot_loss = 0
     count = 0
     enum = 0
-    for (question, reply) in tqdm(train_loader):
+    for (question, reply) in train_loader:
 
         batch_size = question.shape[0]
 
@@ -51,6 +47,7 @@ for epoch in range(config.epochs):
         target = reply.to(device)
 
         target_input = target[:, :-1]
+
         ## remember teacher forcing
         ys = target[:, 1:].contiguous().view(-1)
 
@@ -62,31 +59,27 @@ for epoch in range(config.epochs):
         preds = preds.view(-1, preds.size(-1))
 
         loss = F.cross_entropy(preds, ys, ignore_index = 0)
-    
-        trans_optim.optimizer.zero_grad()
+
+        optimizer.zero_grad()
 
         loss.backward()
+        
+        torch.nn.utils.clip_grad_norm_(transformer.parameters(), 0.5)
 
-        trans_optim.step()
+        optimizer.step()
 
        	tot_loss += loss.item() * batch_size
         count += batch_size
 
         enum += 1
 
-        if enum % 10 == 0:
+        if enum % 200 == 0:
             print("Loss: {:.3f}".format(tot_loss/count))
-
+    
+    print(f'{epoch} completed')
 
     state = {'epoch': config.epochs, 'transformer': transformer, 'transformer_optimizer': trans_optim}
-    torch.save(state, 'checkpoint_' + str(epoch) + '.pth.tar')
-
-
-    
-
-        
-       
-
+    torch.save(state, 'checkpoint' + '.pth.tar')
 
 
  
