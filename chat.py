@@ -7,6 +7,7 @@ import re
 from dataset import vocab_dict
 
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 rev_vocab = {v:k for k,v in vocab_dict.items()}
 
@@ -72,7 +73,7 @@ def evaluate(sentence,model,max_len = 40):
     return sentence
 
 
-checkpoint = torch.load('checkpoint_0.pth.tar')
+checkpoint = torch.load('checkpoint.pth.tar',map_location = device)
 transformer = checkpoint['transformer']
 
 

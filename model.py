@@ -59,11 +59,12 @@ def create_look_ahead_mask(x):
 
 ############# We will break the model into 6 Subparts #############
 ## 1. Embedding Class  (Embedder)
-## 2. Attention Class (Multihead Attention and helper scaled_dot_product_attention)
-## 3. Feed Forward Class (Feed Forward neural net)
-## 4. Encoder Class (Encoder layer and Encoder)
-## 5. Decoder Class (Decoder layer and Decoder)
-## 6. Transformer Class (Finally Transformer)
+## 2. Positional Encoding (PositionalEncoding add sin and cos functions)
+## 3. Attention Class (Multihead Attention and helper scaled_dot_product_attention)
+## 4. Feed Forward Class (Feed Forward neural net)
+## 5. Encoder Class (Encoder layer and Encoder)
+## 6. Decoder Class (Decoder layer and Decoder)
+## 7. Transformer Class (Finally Transformer)
 
 
 class Embedder(nn.Module):
