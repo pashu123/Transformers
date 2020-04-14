@@ -5,44 +5,125 @@ import torch.nn.functional as F
 import config
 import copy
 import math
-############# We will break the model into 6 Subparts #############
-## 1. Embedding Class 
-## 2. Attention Class
-## 3. Feed Forward Class
-## 4. Encoder Class
-## 5. Decoder Class
-## 6. Transformer Class
-
 
 ## Select the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+############# Helper Functions ################################
+
+
 def get_clones(module, N):
+    '''Creates clones of N encoder and decoder layers'''
     return nn.ModuleList([copy.deepcopy(module) for i in range(N)])
 
 
 def scaled_dot_product_attention(query, key, value, mask):
-    '''query, key, value : batch_size * heads * max_len * d_h
+    ''' query, key, value : batch_size * heads * max_len * d_h
         return output : batch_size * heads * max_len * d_h
     '''
     
     matmul = torch.matmul(query,key.transpose(-2,-1))
-
     scale = torch.tensor(query.shape[-1],dtype=float)
-
     logits = matmul / torch.sqrt(scale)
-
     if mask is not None:
         logits += (mask.float() * -1e9)
     
     attention_weights = F.softmax(logits,dim = -1)
-
     output = torch.matmul(attention_weights,value)
-
     return output
 
 
+def create_padding_mask(x):
+    '''creates padding mask so that 
+        padding doesn't contribute to overall loss
+        return mask of shape (batch_size,1,1,max_len)'''
+    mask = (x == 0) * 1
+    mask = mask.unsqueeze(1).unsqueeze(1)
+    return mask
+
+def create_look_ahead_mask(x):
+    '''to create look_ahead mask for output so as to see 
+        previous word to predict the next one,also creates
+        mask for padding data.
+        mask of shape (batch_size * 1 * max_len * max_len)'''
+
+    seq_len = x.shape[1]
+    mask = torch.triu(torch.ones(seq_len, seq_len)).transpose(0, 1).type(dtype=torch.uint8)
+    mask = mask.to(device)
+    mask = (mask == 0) * 1
+    mask = mask.unsqueeze(0)
+    pad_mask = create_padding_mask(x)
+    return torch.max(mask,pad_mask)
+
+
+
+############# We will break the model into 6 Subparts #############
+## 1. Embedding Class  (Embedder)
+## 2. Attention Class (Multihead Attention and helper scaled_dot_product_attention)
+## 3. Feed Forward Class (Feed Forward neural net)
+## 4. Encoder Class (Encoder layer and Encoder)
+## 5. Decoder Class (Decoder layer and Decoder)
+## 6. Transformer Class (Finally Transformer)
+
+
+class Embedder(nn.Module):
+    '''Input embedding layer of size vocab_size * dimensionality
+    of word embedding'''
+    def __init__(self,vocab_size,d_model):
+        super().__init__()
+        self.embed = nn.Embedding(vocab_size, d_model)
+    
+    def forward(self,x):
+        return self.embed(x)
+
+
+class PositionalEncoding(nn.Module):
+    '''Transformers are not sequential so positional encoding
+    gives some sequentiality to sentence'''
+
+    def __init__(self, d_model, dropout=0.1, max_len=40):
+        super(PositionalEncoding, self).__init__()
+        self.dropout = nn.Dropout(p=dropout)
+        self.d_model = d_model
+
+        pe = torch.zeros(max_len, d_model).to(device)
+        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0)
+        self.pe = pe
+
+    def forward(self, x):
+        x *= math.sqrt(self.d_model)
+        x +=  self.pe[:,:x.size(1)]
+        return self.dropout(x)
+
+
+class FeedForward(nn.Module):
+    '''Feed Forward neural network, simple isn't it'''
+    def __init__(self,d_model,d_ff = 2048,dropout = 0.1):
+        super().__init__()
+        self.linear_1 = nn.Linear(d_model,d_ff)
+        self.dropout = nn.Dropout(dropout)
+        self.linear2 = nn.Linear(d_ff, d_model)
+
+    def forward(self,x):
+        x = F.relu(self.linear_1(x))
+        x = self.dropout(x)
+        x = self.linear2(x)
+        return x
+
+
+
+
+
+
+
 class MultiHeadAttention(nn.Module):
+    '''Divides d_model into heads and
+    applies attention to each layer with helper 
+    function scaled_dot_product_attention'''
 
     def __init__(self, heads, d_model):
         super().__init__()
@@ -85,68 +166,11 @@ class MultiHeadAttention(nn.Module):
 
 
 
-def create_padding_mask(x):
-
-    mask = (x == 0) * 1
-    mask = mask.unsqueeze(1).unsqueeze(1)
-    return mask
-
-
-def create_look_ahead_mask(x):
-
-    seq_len = x.shape[1]
-    mask = torch.triu(torch.ones(seq_len, seq_len)).transpose(0, 1).type(dtype=torch.uint8)
-    mask = mask.to(device)
-    mask = (mask == 0) * 1
-    mask = mask.unsqueeze(0)
-    pad_mask = create_padding_mask(x)
-    return torch.max(mask,pad_mask)
-
-
-class PositionalEncoding(nn.Module):
-
-    def __init__(self, d_model, dropout=0.1, max_len=40):
-        super(PositionalEncoding, self).__init__()
-        self.dropout = nn.Dropout(p=dropout)
-        self.d_model = d_model
-
-        pe = torch.zeros(max_len, d_model).to(device)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
-        pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
-        pe = pe.unsqueeze(0)
-        self.pe = pe
-
-    def forward(self, x):
-        x *= math.sqrt(self.d_model)
-        x +=  self.pe[:,:x.size(1)]
-        return self.dropout(x)
-
-
-class FeedForward(nn.Module):
-    def __init__(self,d_model,d_ff = 2048,dropout = 0.1):
-        super().__init__()
-        self.linear_1 = nn.Linear(d_model,d_ff)
-        self.dropout = nn.Dropout(dropout)
-        self.linear2 = nn.Linear(d_ff, d_model)
-
-    def forward(self,x):
-        x = F.relu(self.linear_1(x))
-        x = self.dropout(x)
-        x = self.linear2(x)
-        return x
-
-class Embedder(nn.Module):
-    def __init__(self,vocab_size,d_model):
-        super().__init__()
-        self.embed = nn.Embedding(vocab_size, d_model)
-    
-    def forward(self,x):
-        return self.embed(x)
-
 
 class EncoderLayer(nn.Module):
+    '''Encoder layer of transformer 
+    embedding -> positional_encoding -> attention
+     -> Feed Forward with some resnet connection'''
     def __init__(self, d_model, heads, dropout = 0.1):
         super().__init__()
         self.norm_1 = nn.LayerNorm(d_model)
@@ -168,6 +192,7 @@ class EncoderLayer(nn.Module):
 
 
 class DecoderLayer(nn.Module):
+    '''Takes one input from encoder and another from out target words'''
     def __init__(self, d_model, heads, dropout = 0.1):
         super().__init__()
         self.norm_1 = nn.LayerNorm(d_model)
@@ -195,6 +220,7 @@ class DecoderLayer(nn.Module):
 
 
 class Encoder(nn.Module):
+    '''Cloning and making copies'''
     def __init__(self, vocab_size, d_model, N, heads):
         super().__init__()
         self.N = N
@@ -212,6 +238,7 @@ class Encoder(nn.Module):
     
 
 class Decoder(nn.Module):
+    '''Cloning and making copies'''
     def __init__(self, vocab_size, d_model, N, heads):
         super().__init__()
         self.N = N
@@ -229,6 +256,7 @@ class Decoder(nn.Module):
 
     
 class Transformer(nn.Module):
+    '''Finally Transformer yup done!'''
     def __init__(self, vocab_size, d_model, num_layers, heads):
         super().__init__()
         self.encoder = Encoder(vocab_size,d_model,num_layers,heads)
