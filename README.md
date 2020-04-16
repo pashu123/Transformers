@@ -10,6 +10,9 @@ Pytorch Implementation of Transformers Explained with Comments
 <h1 id="features-of-transformers">Features of Transformers</h1>
 <h2 id="not-sequential">Not Sequential</h2>
 
+![1](https://user-images.githubusercontent.com/16246821/79481350-fc6ade80-802c-11ea-8f9f-4aa0591f23b6.png)
+
+![2](https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png)
 
 
 <h2 id="self-attention">Self Attention</h2>
@@ -20,5 +23,3 @@ Pytorch Implementation of Transformers Explained with Comments
 <h2 id="multi-head-attention">Multi Head Attention</h2>
 <p>This gives the model the advantage of focusing on different words h ways (h is the number of heads). It broadens the model’s capability to focus on different positions and gives the attention layer multiple different representations.</p>
 
-<p><span id="fig:awesome_image1" label="fig:awesome_image1">[fig:awesome_image1]</span> <img src="6" title="fig:" alt="In another head ’heroes’ is attending to ’path’ and ’choose’" /></p>
-<p><span id="fig:awesome_image2" label="fig:awesome_image2">[fig:awesome_image2]</span></p>
