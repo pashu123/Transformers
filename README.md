@@ -49,10 +49,14 @@ Pytorch Implementation of Transformers Explained with Comments
 
 ![9](https://user-images.githubusercontent.com/16246821/79481339-f96fee00-802c-11ea-9470-ca511ec8a6cc.png)
 
+![10](https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png)
+
 
 <h2 id="multi-head-attention-1">Multi-Head Attention</h2>
 <p>The General Framework of Attention is given by</p>
 <p>Attention(Q,K,V) = Softmax(Q <span class="math inline"><em>K</em><sup><em>T</em></sup></span> / <span class="math inline"><em>d</em><sub><em>h</em></sub></span>)V</p>
 <p>where Q is Query Vector, K is Key Vector and V is Value vector.</p>
+
+![11](https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png)
 
 
