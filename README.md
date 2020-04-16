@@ -39,12 +39,17 @@ Pytorch Implementation of Transformers Explained with Comments
 <h2 id="input-embeddings">Input Embeddings</h2>
 <p>First we encode every word into embedding vector i.e choose glove embedding, and since transformer accepts sentences so we define the Max Length which is no. of word embedding to be passed. Finally, we process the input in batches so a final tensor of <em>Embedding Dimension * Max Length * Batch Size</em> is processed.</p>
 
+![7](https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png)
+
 <h2 id="positional-encoding">Positional Encoding</h2>
 <p>This technique is used because there is no notion of word order (1st word, 2nd word, ..) in the proposed architecture. All words of input sequence are fed to the network with no special order or position (unlike common RNN or ConvNet architectures), thus, model has no idea how the words are ordered. Consequently, a position-dependent signal is added to each word-embedding to help the model incorporate the order of words.</p>
+
+![8](https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png)
+
 
 <h2 id="multi-head-attention-1">Multi-Head Attention</h2>
 <p>The General Framework of Attention is given by</p>
 <p>Attention(Q,K,V) = Softmax(Q <span class="math inline"><em>K</em><sup><em>T</em></sup></span> / <span class="math inline"><em>d</em><sub><em>h</em></sub></span>)V</p>
 <p>where Q is Query Vector, K is Key Vector and V is Value vector.</p>
 
-
+![9](https://user-images.githubusercontent.com/16246821/79481339-f96fee00-802c-11ea-9470-ca511ec8a6cc.png)
