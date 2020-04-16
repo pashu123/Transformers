@@ -11,9 +11,10 @@ Pytorch Implementation of Transformers Explained with Comments
 <h2 id="not-sequential">Not Sequential</h2>
 <br>
 <br>
+
 ![1](https://user-images.githubusercontent.com/16246821/79481350-fc6ade80-802c-11ea-8f9f-4aa0591f23b6.png)
 
-![2](https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png)k
+![2](https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png)
 
 
 <h2 id="self-attention">Self Attention</h2>
