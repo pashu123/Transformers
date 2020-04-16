@@ -61,3 +61,20 @@ Pytorch Implementation of Transformers Explained with Comments
 
 <p>In case of Multi-Head attention we have, For each head i: <span class="math inline"><em>h</em><em>e</em><em>a</em><em>d</em><sub><em>i</em></sub></span> = Attention(<span class="math inline"><em>Q</em><em>W</em><sub><em>i</em></sub><sup><em>Q</em></sup></span>, <span class="math inline"><em>K</em><em>W</em><sub><em>i</em></sub><sup><em>K</em></sup></span>, <span class="math inline"><em>V</em><em>W</em><sub><em>i</em></sub><sup><em>V</em></sup></span>)</p>
 <p>Finally all the attention head is concatenated and is passed through linear layer of same size as input so that the dimensions do not alter. We computed ’h’ different attention heads. Concatenation of heads is not enough to transfer information between heads and so the concatenated heads are passed through the linear layer.</p>
+
+<h2 id="residual-learning">Residual Learning</h2>
+<p>We are learning what’s left of (residual), without learning a new representation. You are learning the ’remaining’ only. If the block doesn’t learn anything, then your F(X) would be 0, and that it what makes the training go much faster, since learning a completely new representation is omitted. Therefor , the model can default to using the identity function if the layer is not beneficial.</p>
+<p><strong>Either learn something useful, or don’t learn anything!</strong></p>
+
+![12](https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png)
+
+<h2 id="layer-normalization">Layer Normalization</h2>
+<p>In order to prevent the values of the outputs from becoming bigger. We have performed a lot of operations which may cause the values of the layer output to become bigger.So we use Layer Norm to normalize them back again.</p>
+<p>Mean over all neurons in the layer : <span class="math inline">$\mu = \frac{1}{m}\sum_{i=1}^{m}x_i$</span></p>
+<p>Variance over all neurons in the layer : <span class="math inline">$\sigma^2 = \frac{1}{m}\sum_{i=1}^{m}(x_i-\mu)^2$</span></p>
+<p>Normalize, subtract mean and divide by standard deviation: <span class="math inline">$x_i = \frac{x_i-\mu}{\sqrt{\sigma^2 + \epsilon}}$</span></p>
+<p>Scale and shift by a learnable parameter: <span class="math inline"><em>y</em><sub><em>i</em></sub> = <em>γ</em><em>x</em><sub><em>i</em></sub> + <em>β</em></span></p>
+<p>Here <span class="math inline"><em>γ</em></span> and <span class="math inline"><em>β</em></span> are learnable parameters.</p>
+<h2 id="masked-multi-head-attention">Masked Multi-Head Attention</h2>
+<p>For self-attention, we don’t want our decoder to attend to future word. Otherwise, the model will cheat and learn to look at future words. At testing time, we don’t have future words! We are predicting one word at a time(running the decoder for a number of timesteps, just like an LSTM at testing time). So this will be incompatible during testing(inference). Therefore, the decoder is only allowed to attend to earlier positions. During testing time, it can only attend to what has been generated so far. So we need to resemble the testing time scenario during training as well.</p>
+
