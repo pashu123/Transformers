@@ -59,4 +59,5 @@ Pytorch Implementation of Transformers Explained with Comments
 
 ![11](https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png)
 
-
+<p>In case of Multi-Head attention we have, For each head i: <span class="math inline"><em>h</em><em>e</em><em>a</em><em>d</em><sub><em>i</em></sub></span> = Attention(<span class="math inline"><em>Q</em><em>W</em><sub><em>i</em></sub><sup><em>Q</em></sup></span>, <span class="math inline"><em>K</em><em>W</em><sub><em>i</em></sub><sup><em>K</em></sup></span>, <span class="math inline"><em>V</em><em>W</em><sub><em>i</em></sub><sup><em>V</em></sup></span>)</p>
+<p>Finally all the attention head is concatenated and is passed through linear layer of same size as input so that the dimensions do not alter. We computed ’h’ different attention heads. Concatenation of heads is not enough to transfer information between heads and so the concatenated heads are passed through the linear layer.</p>
