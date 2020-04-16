@@ -20,8 +20,33 @@ Pytorch Implementation of Transformers Explained with Comments
 <h2 id="self-attention">Self Attention</h2>
 <p>As the model processes each word (each position in the input sequence), self attention allows it to look at other positions in the input sequence for clues that can help lead to a better encoding for this word.</p>
 
+<br>
+
+![4](https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png)
+
+
 
 
 <h2 id="multi-head-attention">Multi Head Attention</h2>
 <p>This gives the model the advantage of focusing on different words h ways (h is the number of heads). It broadens the model’s capability to focus on different positions and gives the attention layer multiple different representations.</p>
+
+![5](https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png)
+
+![6](https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png)
+
+
+
+<h1 id="architecture">Architecture</h1>
+
+<h2 id="input-embeddings">Input Embeddings</h2>
+<p>First we encode every word into embedding vector i.e choose glove embedding, and since transformer accepts sentences so we define the Max Length which is no. of word embedding to be passed. Finally, we process the input in batches so a final tensor of <em>Embedding Dimension * Max Length * Batch Size</em> is processed.</p>
+
+<h2 id="positional-encoding">Positional Encoding</h2>
+<p>This technique is used because there is no notion of word order (1st word, 2nd word, ..) in the proposed architecture. All words of input sequence are fed to the network with no special order or position (unlike common RNN or ConvNet architectures), thus, model has no idea how the words are ordered. Consequently, a position-dependent signal is added to each word-embedding to help the model incorporate the order of words.</p>
+
+<h2 id="multi-head-attention-1">Multi-Head Attention</h2>
+<p>The General Framework of Attention is given by</p>
+<p>Attention(Q,K,V) = Softmax(Q <span class="math inline"><em>K</em><sup><em>T</em></sup></span> / <span class="math inline"><em>d</em><sub><em>h</em></sub></span>)V</p>
+<p>where Q is Query Vector, K is Key Vector and V is Value vector.</p>
+
 
