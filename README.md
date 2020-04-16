@@ -2,4 +2,8 @@
 Pytorch Implementation of Transformers Explained with Comments
 
 
-<img src="https://user-images.githubusercontent.com/16246821/79049181-9c94c200-7c3f-11ea-938c-fc7792095d0b.png" alt="#" width="250" height="175">
+## Intorduction
+
+### The Transformer are based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.
+### These models are superior in quality while being more parallelizable and requiring significantly less time to train.
+### In this document we will describe the transformer model completely and finally make our transformer model in PyTorch and test it on Cornell Movie Dialogs Corpus to show some interesting result.

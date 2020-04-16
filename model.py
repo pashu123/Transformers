@@ -172,7 +172,7 @@ class MultiHeadAttention(nn.Module):
 class EncoderLayer(nn.Module):
     '''Encoder layer of transformer 
     embedding -> positional_encoding -> attention
-     -> Feed Forward with some resnet connection'''
+     -> Feed Forward with skip connection'''
     def __init__(self, d_model, heads, dropout = 0.1):
         super().__init__()
         self.norm_1 = nn.LayerNorm(d_model)
