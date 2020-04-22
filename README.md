@@ -37,7 +37,9 @@ The whole input is fed into transformer at once, whereas for sequential models l
 
 <br>
 
-![4](https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png">
+</p>
 
 ```
 There is a high correlation between 'man' and 'battle' and 'man' and 'struggle' which is captured by self attention.
@@ -49,7 +51,14 @@ There is a high correlation between 'man' and 'battle' and 'man' and 'struggle' 
 <h2 id="multi-head-attention">Multi Head Attention</h2>
 <p>This gives the model the advantage of focusing on different words h ways (h is the number of heads). It broadens the model’s capability to focus on different positions and gives the attention layer multiple different representations.</p>
 
-![5](https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png) ![6](https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png)
+
+<table>
+  <tr>
+    <td><img width="150" height="400" src="https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png">
+  </td>
+    <td><img width="150" height="400" src="https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png"></td>
+  </tr>
+ </table>
 
 ```
 In one head 'heroes' is attending to 'powers' and 'graced'
@@ -63,7 +72,9 @@ In another head 'heroes' is attending to 'path' and 'choose'
 <h1 id="architecture">Architecture</h1>
 
 
-![7](https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png">
+</p>
 
 ```
 The full model architecture of the transformer. (Image source: Fig 1 & 2 in Vaswani, et al., 2017.
@@ -76,16 +87,21 @@ The full model architecture of the transformer. (Image source: Fig 1 & 2 in Vasw
 The input to the transformer is embedding dimension times Max length and we give batches of those.
 ```
 
-![8](https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png">
+</p>
 
 <h2 id="positional-encoding">Positional Encoding</h2>
 <p>This technique is used because there is no notion of word order (1st word, 2nd word, ..) in the proposed architecture. All words of input sequence are fed to the network with no special order or position (unlike common RNN or ConvNet architectures), thus, model has no idea how the words are ordered. Consequently, a position-dependent signal is added to each word-embedding to help the model incorporate the order of words.</p>
 
 
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481339-f96fee00-802c-11ea-9470-ca511ec8a6cc.png">
+</p>
 
-![9](https://user-images.githubusercontent.com/16246821/79481339-f96fee00-802c-11ea-9470-ca511ec8a6cc.png)
-
-![10](https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png">
+</p>
 
 ```
 A real example of positional encoding with a toy embedding size of 4 (The Illustrated Transformer by Jay Allamar)
@@ -96,8 +112,9 @@ A real example of positional encoding with a toy embedding size of 4 (The Illust
 <p>Attention(Q,K,V) = Softmax(Q <span class="math inline"><em>K</em><sup><em>T</em></sup></span> / <span class="math inline"><em>d</em><sub><em>h</em></sub></span>)V</p>
 <p>where Q is Query Vector, K is Key Vector and V is Value vector.</p>
 
-![11](https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png)
-
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png">
+</p>
 
 ```
 Here d_h is embedding size/h  and h is no. of attention heads.
@@ -110,7 +127,9 @@ Here d_h is embedding size/h  and h is no. of attention heads.
 <p>We are learning what’s left of (residual), without learning a new representation. You are learning the ’remaining’ only. If the block doesn’t learn anything, then your F(X) would be 0, and that it what makes the training go much faster, since learning a completely new representation is omitted. Therefor , the model can default to using the identity function if the layer is not beneficial.</p>
 <p><strong>Either learn something useful, or don’t learn anything!</strong></p>
 
-![12](https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png">
+</p>
 
 <h2 id="layer-normalization">Layer Normalization</h2>
 <p>In order to prevent the values of the outputs from becoming bigger. We have performed a lot of operations which may cause the values of the layer output to become bigger.So we use Layer Norm to normalize them back again.</p>
