@@ -1,9 +1,21 @@
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
 
+### Install
 This project requires **Python** and the following Python libraries installed:
 
-- [PyTorch v1.2](https://pytorch.org/)
+- [PyTorch](https://pytorch.org/)
+
+If you do not have Python installed yet, it is highly recommended that you install the [Anaconda](http://continuum.io/downloads) distribution of Python, which already has the above packages and more included.
+
+### Code
+`dataset.py`: Reads the implemented tokenized dataset. (`Cornell Movie dialog Corpus`)
+`model.py`: Generic implementation of pytorch transformers.
+`train.py`: Training Loop
+`config.py`: Configuration of the model
+`chat.py`: Loads the model and allows interactive chatting on terminal.
+
+
 
 
 <h1 id="introduction">Introduction</h1>
