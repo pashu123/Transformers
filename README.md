@@ -6,7 +6,10 @@
 `Adam Optimizer with scheduler`: As mentioned in the transformers paper. [Transformers](https://arxiv.org/abs/1706.03762) <br>
 `Beam Search with length normalization`: Beam search avoids neural text Degeneration. [Beam Search](https://arxiv.org/abs/1809.00069) <br>
 `Avoid Neural Degenaration with Nucleus Sampling`: Nucleus Sampling works better than Beam Search. [Nucleus Sampling](https://arxiv.org/abs/1904.09751) <br>
+<<<<<<< HEAD
 `Optimal No. of Heads`: Based on paper Are Sixteen Heads Really Better than One? [Paper](https://papers.nips.cc/paper/9551-are-sixteen-heads-really-better-than-one.pdf)<br>
+=======
+>>>>>>> dda80dcc8b280aa850550890d8610456ca9c40cd
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
 
