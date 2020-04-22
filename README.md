@@ -1,3 +1,6 @@
+# Neural Network Hacks Tried
+`Xavier Initialization` : All layers of the transformers initialized with xavier uniform. [Xavier Uniform](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf)
+# Hacks to Try
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
 
