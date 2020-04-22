@@ -5,7 +5,8 @@
 # Hacks to Try
 `Adam Optimizer with scheduler`: As mentioned in the transformers paper. [Transformers](https://arxiv.org/abs/1706.03762) <br>
 `Beam Search with length normalization`: Beam search avoids neural text Degeneration. [Beam Search](https://arxiv.org/abs/1809.00069) <br>
-`Avoid Neural Degenaration with Nucleus Sampling`: Nucleus Sampling works better than Beam Search. [Nuclues Sampling](https://arxiv.org/abs/1904.09751) <br>
+`Avoid Neural Degenaration with Nucleus Sampling`: Nucleus Sampling works better than Beam Search. [Nucleus Sampling](https://arxiv.org/abs/1904.09751) <br>
+`Optimal No. of Heads`: Based on paper Are Sixteen Heads Really Better than One? [Paper](https://papers.nips.cc/paper/9551-are-sixteen-heads-really-better-than-one.pdf)<br>
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
 
@@ -18,9 +19,18 @@ Pytorch Implementation of Transformers Explained with Comments
 <br>
 <br>
 
-![1](https://user-images.githubusercontent.com/16246821/79481350-fc6ade80-802c-11ea-8f9f-4aa0591f23b6.png)
 
-![2](https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481350-fc6ade80-802c-11ea-8f9f-4aa0591f23b6.png">
+</p>
+
+<p align="center">
+  <img width="500" height="125" src="https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png">
+</p>
+
+```
+The whole input is fed into transformer at once, whereas for sequential models like rnns, one at a time.
+```
 
 
 <h2 id="self-attention">Self Attention</h2>
@@ -28,7 +38,13 @@ Pytorch Implementation of Transformers Explained with Comments
 
 <br>
 
-![4](https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png)
+<p align="center">
+  <img width="450" height="100" src="https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png">
+</p>
+
+```
+There is a high correlation between 'man' and 'battle' and 'man' and 'struggle' which is captured by self attention.
+```
 
 
 
@@ -36,34 +52,74 @@ Pytorch Implementation of Transformers Explained with Comments
 <h2 id="multi-head-attention">Multi Head Attention</h2>
 <p>This gives the model the advantage of focusing on different words h ways (h is the number of heads). It broadens the model’s capability to focus on different positions and gives the attention layer multiple different representations.</p>
 
-![5](https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png) ![6](https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png)
+
+<table>
+  <tr>
+    <td><img width="100" height="300" src="https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png">
+  </td>
+    <td><img width="100" height="300" src="https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png"></td>
+  </tr>
+ </table>
+
+```
+In one head 'heroes' is attending to 'powers' and 'graced'
+```
+```
+In another head 'heroes' is attending to 'path' and 'choose'
+```
 
 
 
 <h1 id="architecture">Architecture</h1>
 
 
-![7](https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png)
+<p align="center">
+  <img width="625" height="400" src="https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png">
+</p>
+
+```
+The full model architecture of the transformer. (Image source: Fig 1 & 2 in Vaswani, et al., 2017.)
+```
 
 <h2 id="input-embeddings">Input Embeddings</h2>
 <p>First we encode every word into embedding vector i.e choose glove embedding, and since transformer accepts sentences so we define the Max Length which is no. of word embedding to be passed. Finally, we process the input in batches so a final tensor of <em>Embedding Dimension * Max Length * Batch Size</em> is processed.</p>
 
-![8](https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png)
+```
+The input to the transformer is embedding dimension times Max length and we give batches of those.
+```
+
+<p align="center">
+  <img width="225" height="230" src="https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png">
+</p>
 
 <h2 id="positional-encoding">Positional Encoding</h2>
 <p>This technique is used because there is no notion of word order (1st word, 2nd word, ..) in the proposed architecture. All words of input sequence are fed to the network with no special order or position (unlike common RNN or ConvNet architectures), thus, model has no idea how the words are ordered. Consequently, a position-dependent signal is added to each word-embedding to help the model incorporate the order of words.</p>
 
-![9](https://user-images.githubusercontent.com/16246821/79481339-f96fee00-802c-11ea-9470-ca511ec8a6cc.png)
 
-![10](https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481339-f96fee00-802c-11ea-9470-ca511ec8a6cc.png">
+</p>
 
+<p align="center">
+  <img width="500" height="125" src="https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png">
+</p>
+
+```
+A real example of positional encoding with a toy embedding size of 4 (The Illustrated Transformer by Jay Allamar)
+```
 
 <h2 id="multi-head-attention-1">Multi-Head Attention</h2>
 <p>The General Framework of Attention is given by</p>
 <p>Attention(Q,K,V) = Softmax(Q <span class="math inline"><em>K</em><sup><em>T</em></sup></span> / <span class="math inline"><em>d</em><sub><em>h</em></sub></span>)V</p>
 <p>where Q is Query Vector, K is Key Vector and V is Value vector.</p>
 
-![11](https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png)
+<p align="center">
+  <img width="500" height="170" src="https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png">
+</p>
+
+```
+Here d_h is embedding size/h  and h is no. of attention heads.
+```
 
 <p>In case of Multi-Head attention we have, For each head i: <span class="math inline"><em>h</em><em>e</em><em>a</em><em>d</em><sub><em>i</em></sub></span> = Attention(<span class="math inline"><em>Q</em><em>W</em><sub><em>i</em></sub><sup><em>Q</em></sup></span>, <span class="math inline"><em>K</em><em>W</em><sub><em>i</em></sub><sup><em>K</em></sup></span>, <span class="math inline"><em>V</em><em>W</em><sub><em>i</em></sub><sup><em>V</em></sup></span>)</p>
 <p>Finally all the attention head is concatenated and is passed through linear layer of same size as input so that the dimensions do not alter. We computed ’h’ different attention heads. Concatenation of heads is not enough to transfer information between heads and so the concatenated heads are passed through the linear layer.</p>
@@ -72,7 +128,9 @@ Pytorch Implementation of Transformers Explained with Comments
 <p>We are learning what’s left of (residual), without learning a new representation. You are learning the ’remaining’ only. If the block doesn’t learn anything, then your F(X) would be 0, and that it what makes the training go much faster, since learning a completely new representation is omitted. Therefor , the model can default to using the identity function if the layer is not beneficial.</p>
 <p><strong>Either learn something useful, or don’t learn anything!</strong></p>
 
-![12](https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png)
+<p align="center">
+  <img width="200" height="300" src="https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png">
+</p>
 
 <h2 id="layer-normalization">Layer Normalization</h2>
 <p>In order to prevent the values of the outputs from becoming bigger. We have performed a lot of operations which may cause the values of the layer output to become bigger.So we use Layer Norm to normalize them back again.</p>
