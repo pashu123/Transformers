@@ -1,5 +1,7 @@
 # Neural Network Hacks Tried
-`Xavier Initialization` : All layers of the transformers initialized with xavier uniform. [Xavier Uniform](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf)
+`Xavier Initialization` : All layers of the transformers initialized with xavier uniform. [Xavier Uniform](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf)<br>
+`Gradient Clipping`: Gradient clipping to avoid exploding gradient problem. [Gradient Clipping](https://arxiv.org/pdf/1211.5063.pdf)<br>
+`SGD with optimizer`: Got from official pytorch implemenation of transformers. [SGD optimizer and scheduler](https://pytorch.org/tutorials/beginner/transformer_tutorial.html)<br>
 # Hacks to Try
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
