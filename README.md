@@ -9,11 +9,11 @@ This project requires **Python** and the following Python libraries installed:
 If you do not have Python installed yet, it is highly recommended that you install the [Anaconda](http://continuum.io/downloads) distribution of Python, which already has the above packages and more included.
 
 ### Code
-`dataset.py`: Reads the implemented tokenized dataset. (`Cornell Movie dialog Corpus`)
-`model.py`: Generic implementation of pytorch transformers.
-`train.py`: Training Loop
-`config.py`: Configuration of the model
-`chat.py`: Loads the model and allows interactive chatting on terminal.
+`dataset.py`: Reads the implemented tokenized dataset. (`Cornell Movie dialog Corpus`)<br>
+`model.py`: Generic implementation of pytorch transformers.<br>
+`train.py`: Training Loop<br>
+`config.py`: Configuration of the model<br>
+`chat.py`: Loads the model and allows interactive chatting on terminal.<br>
 
 
 
