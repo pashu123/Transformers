@@ -57,7 +57,7 @@ def create_look_ahead_mask(x):
 
 
 
-############# We will break the model into 6 Subparts #############
+############# We will break the model into 7 Subparts #############
 ## 1. Embedding Class  (Embedder)
 ## 2. Positional Encoding (PositionalEncoding add sin and cos functions)
 ## 3. Attention Class (Multihead Attention and helper scaled_dot_product_attention)

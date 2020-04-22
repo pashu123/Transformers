@@ -6,28 +6,35 @@ import config
 from tqdm import tqdm
 from model import create_padding_mask, create_look_ahead_mask
 
-
+# Getting the vocabulary size for the embedding matrix
 vocab_size = len(vocab_dict)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-
+## Setting up the transformer
 transformer = Transformer(d_model = config.d_model,
                             heads = config.heads,
                             num_layers = config.num_layers,
                             vocab_size = vocab_size)
 
+
+## Sending the transformer to device
 transformer = transformer.to(device)
 
+
+## Hack no. 1 setting the parameters of layer to xavier_uniform
 for p in transformer.parameters():
     if p.dim() > 1:
         nn.init.xavier_uniform_(p)
 
 
+## Want to train the loaded model
 # checkpoint = torch.load('checkpoint.pth.tar')
 # transformer = checkpoint['transformer']
 
+
+## Hack no. 2 Got from pytorch transformer implementation
 lr = 5.0 # learning rate
 optimizer = torch.optim.SGD(transformer.parameters(), lr=lr)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.95)
