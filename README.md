@@ -1,6 +1,9 @@
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
 
+This project requires **Python** and the following Python libraries installed:
+
+- [PyTorch v1.2](https://pytorch.org/)
 
 
 <h1 id="introduction">Introduction</h1>
