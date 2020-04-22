@@ -24,7 +24,7 @@ Pytorch Implementation of Transformers Explained with Comments
 </p>
 
 <p align="center">
-  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png">
+  <img width="500" height="125" src="https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png">
 </p>
 
 ```
@@ -38,7 +38,7 @@ The whole input is fed into transformer at once, whereas for sequential models l
 <br>
 
 <p align="center">
-  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png">
+  <img width="450" height="100" src="https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png">
 </p>
 
 ```
@@ -54,9 +54,9 @@ There is a high correlation between 'man' and 'battle' and 'man' and 'struggle' 
 
 <table>
   <tr>
-    <td><img width="150" height="400" src="https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png">
+    <td><img width="100" height="300" src="https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png">
   </td>
-    <td><img width="150" height="400" src="https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png"></td>
+    <td><img width="100" height="300" src="https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png"></td>
   </tr>
  </table>
 
@@ -73,11 +73,11 @@ In another head 'heroes' is attending to 'path' and 'choose'
 
 
 <p align="center">
-  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png">
+  <img width="625" height="400" src="https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png">
 </p>
 
 ```
-The full model architecture of the transformer. (Image source: Fig 1 & 2 in Vaswani, et al., 2017.
+The full model architecture of the transformer. (Image source: Fig 1 & 2 in Vaswani, et al., 2017.)
 ```
 
 <h2 id="input-embeddings">Input Embeddings</h2>
@@ -88,7 +88,7 @@ The input to the transformer is embedding dimension times Max length and we give
 ```
 
 <p align="center">
-  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png">
+  <img width="225" height="230" src="https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png">
 </p>
 
 <h2 id="positional-encoding">Positional Encoding</h2>
@@ -100,7 +100,7 @@ The input to the transformer is embedding dimension times Max length and we give
 </p>
 
 <p align="center">
-  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png">
+  <img width="500" height="125" src="https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png">
 </p>
 
 ```
@@ -113,7 +113,7 @@ A real example of positional encoding with a toy embedding size of 4 (The Illust
 <p>where Q is Query Vector, K is Key Vector and V is Value vector.</p>
 
 <p align="center">
-  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png">
+  <img width="500" height="170" src="https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png">
 </p>
 
 ```
@@ -128,7 +128,7 @@ Here d_h is embedding size/h  and h is no. of attention heads.
 <p><strong>Either learn something useful, or don’t learn anything!</strong></p>
 
 <p align="center">
-  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png">
+  <img width="200" height="300" src="https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png">
 </p>
 
 <h2 id="layer-normalization">Layer Normalization</h2>
