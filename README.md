@@ -21,6 +21,9 @@ Pytorch Implementation of Transformers Explained with Comments
 ![1](https://user-images.githubusercontent.com/16246821/79481350-fc6ade80-802c-11ea-8f9f-4aa0591f23b6.png)
 
 ![2](https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png)
+```
+The whole input is fed into transformer at once, whereas for sequential models like rnns, one at a time.
+```
 
 
 <h2 id="self-attention">Self Attention</h2>
@@ -30,6 +33,10 @@ Pytorch Implementation of Transformers Explained with Comments
 
 ![4](https://user-images.githubusercontent.com/16246821/79481328-f4ab3a00-802c-11ea-9224-4024827fbb5e.png)
 
+```
+There is a high correlation between 'man' and 'battle' and 'man' and 'struggle' which is captured by self attention.
+```
+
 
 
 
@@ -38,6 +45,13 @@ Pytorch Implementation of Transformers Explained with Comments
 
 ![5](https://user-images.githubusercontent.com/16246821/79481331-f5dc6700-802c-11ea-9df3-530615a44b54.png) ![6](https://user-images.githubusercontent.com/16246821/79481333-f674fd80-802c-11ea-9858-817f1729c042.png)
 
+```
+In one head 'heroes' is attending to 'powers' and 'graced'
+```
+```
+In another head 'heroes' is attending to 'path' and 'choose'
+```
+
 
 
 <h1 id="architecture">Architecture</h1>
@@ -45,18 +59,31 @@ Pytorch Implementation of Transformers Explained with Comments
 
 ![7](https://user-images.githubusercontent.com/16246821/79481335-f70d9400-802c-11ea-83f7-6f470fe46196.png)
 
+```
+The full model architecture of the transformer. (Image source: Fig 1 & 2 in Vaswani, et al., 2017.
+```
+
 <h2 id="input-embeddings">Input Embeddings</h2>
 <p>First we encode every word into embedding vector i.e choose glove embedding, and since transformer accepts sentences so we define the Max Length which is no. of word embedding to be passed. Finally, we process the input in batches so a final tensor of <em>Embedding Dimension * Max Length * Batch Size</em> is processed.</p>
+
+```
+The input to the transformer is embedding dimension times Max length and we give batches of those.
+```
 
 ![8](https://user-images.githubusercontent.com/16246821/79481338-f8d75780-802c-11ea-8fea-eb179ce5ca52.png)
 
 <h2 id="positional-encoding">Positional Encoding</h2>
 <p>This technique is used because there is no notion of word order (1st word, 2nd word, ..) in the proposed architecture. All words of input sequence are fed to the network with no special order or position (unlike common RNN or ConvNet architectures), thus, model has no idea how the words are ordered. Consequently, a position-dependent signal is added to each word-embedding to help the model incorporate the order of words.</p>
 
+
+
 ![9](https://user-images.githubusercontent.com/16246821/79481339-f96fee00-802c-11ea-9470-ca511ec8a6cc.png)
 
 ![10](https://user-images.githubusercontent.com/16246821/79481341-faa11b00-802c-11ea-92e9-e6062725383d.png)
 
+```
+A real example of positional encoding with a toy embedding size of 4 (The Illustrated Transformer by Jay Allamar)
+```
 
 <h2 id="multi-head-attention-1">Multi-Head Attention</h2>
 <p>The General Framework of Attention is given by</p>
@@ -64,6 +91,11 @@ Pytorch Implementation of Transformers Explained with Comments
 <p>where Q is Query Vector, K is Key Vector and V is Value vector.</p>
 
 ![11](https://user-images.githubusercontent.com/16246821/79481342-fb39b180-802c-11ea-88dd-0d639396987b.png)
+
+
+```
+Here d_h is embedding size/h  and h is no. of attention heads.
+```
 
 <p>In case of Multi-Head attention we have, For each head i: <span class="math inline"><em>h</em><em>e</em><em>a</em><em>d</em><sub><em>i</em></sub></span> = Attention(<span class="math inline"><em>Q</em><em>W</em><sub><em>i</em></sub><sup><em>Q</em></sup></span>, <span class="math inline"><em>K</em><em>W</em><sub><em>i</em></sub><sup><em>K</em></sup></span>, <span class="math inline"><em>V</em><em>W</em><sub><em>i</em></sub><sup><em>V</em></sup></span>)</p>
 <p>Finally all the attention head is concatenated and is passed through linear layer of same size as input so that the dimensions do not alter. We computed ’h’ different attention heads. Concatenation of heads is not enough to transfer information between heads and so the concatenated heads are passed through the linear layer.</p>
