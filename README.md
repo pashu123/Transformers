@@ -1,23 +1,6 @@
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
 
-### Install
-This project requires **Python** and the following Python libraries installed:
-
-- [PyTorch](https://pytorch.org/)
-
-If you do not have Python installed yet, it is highly recommended that you install the [Anaconda](http://continuum.io/downloads) distribution of Python, which already has the above packages and more included.
-
-### Code
-`dataset.py`: Reads the implemented tokenized dataset. (`Cornell Movie dialog Corpus`)<br>
-`model.py`: Generic implementation of pytorch transformers.<br>
-`train.py`: Training Loop<br>
-`config.py`: Configuration of the model<br>
-`chat.py`: Loads the model and allows interactive chatting on terminal.<br>
-
-
-
-
 <h1 id="introduction">Introduction</h1>
 <p>The Transformer are based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. These models are superior in quality while being more parallelizable and requiring significantly less time to train. In this document we will describe the transformer model completely and finally make our transformer model in PyTorch and test it on Cornell Movie Dialogs Corpus to show some interesting result.</p>
 .
@@ -88,4 +71,18 @@ If you do not have Python installed yet, it is highly recommended that you insta
 
 <h2 id="masked-multi-head-attention">Masked Multi-Head Attention</h2>
 <p>For self-attention, we don’t want our decoder to attend to future word. Otherwise, the model will cheat and learn to look at future words. At testing time, we don’t have future words! We are predicting one word at a time(running the decoder for a number of timesteps, just like an LSTM at testing time). So this will be incompatible during testing(inference). Therefore, the decoder is only allowed to attend to earlier positions. During testing time, it can only attend to what has been generated so far. So we need to resemble the testing time scenario during training as well.</p>
+
+### Install
+This project requires **Python** and the following Python libraries installed:
+
+- [PyTorch](https://pytorch.org/)
+
+If you do not have Python installed yet, it is highly recommended that you install the [Anaconda](http://continuum.io/downloads) distribution of Python, which already has the above packages and more included.
+
+### Code
+`dataset.py`: Reads the implemented tokenized dataset. (`Cornell Movie dialog Corpus`)<br>
+`model.py`: Generic implementation of pytorch transformers.<br>
+`train.py`: Training Loop<br>
+`config.py`: Configuration of the model<br>
+`chat.py`: Loads the model and allows interactive chatting on terminal.<br>
 
