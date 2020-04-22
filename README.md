@@ -5,7 +5,7 @@
 # Hacks to Try
 `Adam Optimizer with scheduler`: As mentioned in the transformers paper. [Transformers](https://arxiv.org/abs/1706.03762) <br>
 `Beam Search with length normalization`: Beam search avoids neural text Degeneration. [Beam Search](https://arxiv.org/abs/1809.00069) <br>
-`Avoid Neural Degenaration with Nucleus Sampling`: Nucleus Sampling works better than Beam Search. [Nuclues Sampling](https://arxiv.org/abs/1904.09751) <br>
+`Avoid Neural Degenaration with Nucleus Sampling`: Nucleus Sampling works better than Beam Search. [Nucleus Sampling](https://arxiv.org/abs/1904.09751) <br>
 # Transformers
 Pytorch Implementation of Transformers Explained with Comments
 
