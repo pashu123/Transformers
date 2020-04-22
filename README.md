@@ -18,9 +18,15 @@ Pytorch Implementation of Transformers Explained with Comments
 <br>
 <br>
 
-![1](https://user-images.githubusercontent.com/16246821/79481350-fc6ade80-802c-11ea-8f9f-4aa0591f23b6.png)
 
-![2](https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png)
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481350-fc6ade80-802c-11ea-8f9f-4aa0591f23b6.png">
+</p>
+
+<p align="center">
+  <img width="600" height="150" src="https://user-images.githubusercontent.com/16246821/79481319-f1b04980-802c-11ea-9553-091795c73f4d.png">
+</p>
+
 ```
 The whole input is fed into transformer at once, whereas for sequential models like rnns, one at a time.
 ```
