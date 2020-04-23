@@ -130,7 +130,7 @@ Here d_h is embedding size/h  and h is no. of attention heads.
 <p><strong>Either learn something useful, or don’t learn anything!</strong></p>
 
 <p align="center">
-  <img width="200" height="300" src="https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png">
+  <img width="225" height="200" src="https://user-images.githubusercontent.com/16246821/79481345-fbd24800-802c-11ea-8ffd-af7d8d10fc06.png">
 </p>
 
 <h2 id="layer-normalization">Layer Normalization</h2>
